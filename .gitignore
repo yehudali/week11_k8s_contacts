@@ -2,6 +2,5 @@ __pycache__/
 *.pyc
 .env
 
-
-# pymongo_cheatsheet.md
-# week11_k8s_mongo_contacts_api.md
+pymongo_cheatsheet.md
+week11_k8s_mongo_contacts_api.md

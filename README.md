@@ -1,33 +1,114 @@
-# week11_k8s_contacts
 
-```mermaid
-graph LR
-    User((User / Browser))
-    
-    subgraph "Kubernetes Cluster"
-        direction LR
-        
-        %% API Layer
-        ApiService[("API Service<br>(NodePort)<br>Port: 30080")]
-        ApiPod["API Pod<br>(FastAPI Container)<br>Port: 8000"]
-        
-        %% Database Layer
-        MongoService[("MongoDB Service<br>(ClusterIP)<br>Port: 27017")]
-        MongoPod[("MongoDB Pod<br>(Mongo Container)<br>Port: 27017")]
-        
-        %% Connections
-        ApiService -.->|"Selector: app=api"| ApiPod
-        ApiPod -->|"Connects via Host:<br>mongodb-service"| MongoService
-        MongoService -.->|"Selector: app=mongodb"| MongoPod
-    end
+code
+Markdown
+download
+content_copy
+expand_less
+# Week 11 Project: Contact Manager API with Kubernetes
 
-    %% External Connection
-    User -->|"HTTP Request<br>GET /contacts"| ApiService
+---
 
-    %% Styling
-    style ApiService fill:#6db33f,stroke:#333,stroke-width:2px,color:white
-    style MongoService fill:#6db33f,stroke:#333,stroke-width:2px,color:white
-    style ApiPod fill:#326ce5,stroke:#333,stroke-width:2px,color:white
-    style MongoPod fill:#326ce5,stroke:#333,stroke-width:2px,color:white
+## 1. Project Description
+A REST API service for managing a contact list, built with FastAPI and MongoDB. The application is containerized and orchestrated using Kubernetes Pods and Services.
 
-    ```
+### API Endpoints
+- **GET /contacts** - Get all contacts.
+- **POST /contacts** - Create new contact.
+- **PUT /contacts/{id}** - Update existing contact.
+- **DELETE /contacts/{id}** - Delete contact.
+
+---
+
+## 2. Prerequisites
+- Docker & Docker Hub account
+- minikube
+- kubectl
+
+---
+
+## 3. Setup & Deployment
+
+### Build and Push Image
+```bash
+docker build -t yehudali/contacts-api:v1 ./app
+docker push yehudali/contacts-api:v1
+Deploy to Kubernetes
+code
+Bash
+download
+content_copy
+expand_less
+minikube start
+kubectl apply -f k8s/mongodb-pod.yaml
+kubectl apply -f k8s/mongodb-service.yaml
+kubectl apply -f k8s/api-pod.yaml
+kubectl apply -f k8s/api-service.yaml
+4. Testing Instructions
+Step 1: Set API URL
+
+Run this command to automatically capture the API address:
+
+code
+Bash
+download
+content_copy
+expand_less
+export API_URL=$(minikube service api-service --url)
+Step 2: Run CRUD Tests
+
+Copy and paste these commands to test the API:
+
+Create a contact:
+
+code
+Bash
+download
+content_copy
+expand_less
+curl -X POST $API_URL/contacts -H "Content-Type: application/json" -d '{"first_name": "John", "last_name": "Doe", "phone_number": "050-1234567"}'
+
+Get all contacts:
+
+code
+Bash
+download
+content_copy
+expand_less
+curl -X GET $API_URL/contacts
+
+Update contact:
+(Replace {id} with an actual ID from the Get All result)
+
+code
+Bash
+download
+content_copy
+expand_less
+curl -X PUT $API_URL/contacts/{id} -H "Content-Type: application/json" -d '{"first_name": "John", "last_name": "Smith", "phone_number": "050-0000000"}'
+
+Delete contact:
+
+code
+Bash
+download
+content_copy
+expand_less
+curl -X DELETE $API_URL/contacts/{id}
+5. Helpful Commands
+Debugging
+
+kubectl get pods - Check if pods are Running.
+
+kubectl get svc - View service status.
+
+kubectl logs api - View API application logs.
+
+Cleanup
+
+kubectl delete -f k8s/ - Removes all deployed resources.
+
+code
+Code
+download
+content_copy
+expand_less
