@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my_project-pod
+spec:
+  containers:
+  - name: my_project-container
+    image: project_contacts:0.0.1
+    ports:
+    - containerPort: 8000
+    env:
+    - name: HOST
+      value: 
+    - name: PORT
+      value: 27017
+    - name: DB
+      value: mongodb
+    - name: COLLECTION
+      value: contacts
