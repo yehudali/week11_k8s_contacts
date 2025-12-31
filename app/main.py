@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-# from .moduls import contact
+
 from interactor import Datainteractor
 
 db = Datainteractor()
@@ -17,7 +17,6 @@ class ContactBase(BaseModel):
 
 @app.get("/")
 def hello():
-    clietn = db.clietn()
     return{"message" : "Welcome to Fastapi server!" }
 
 
